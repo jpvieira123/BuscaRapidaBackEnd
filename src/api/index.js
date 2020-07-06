@@ -1,9 +1,9 @@
+require("dotenv").config();
 const express = require("express");
 const pagseguro = require("../");
 const configurations = require("./config");
 const bodyParser = require("body-parser");
 const admin = require('firebase-admin');
-const functions = require('firebase-functions');
 
 /**
  * Initialize Firebase
@@ -110,6 +110,6 @@ app.get("/api/transaction", function (req, res) {
 /**
  * Listen
  */
-app.listen(80, function () {
+app.listen(process.env.PORT || 80 , function () {
   console.log("App listening on port 80!");
 });
