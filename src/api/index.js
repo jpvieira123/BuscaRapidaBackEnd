@@ -4,6 +4,7 @@ const pagseguro = require("../");
 const configurations = require("./config");
 const bodyParser = require("body-parser");
 const admin = require('firebase-admin');
+const cors = require('cors');
 
 /**
  * Initialize Firebase
@@ -33,6 +34,12 @@ const config = configurations(configCollection);
  * Middleware
  */
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://ocomparador.com')
+  console.log('Middleware')
+  app.use(cors());
+  next()
+})
 
 /**
  * Hello
@@ -87,11 +94,13 @@ app.post("/api/directPayment/creditCard", function (req, res) {
  * Authorization notification
  */
 app.get("/api/transaction", function (req, res) {
-  const { transactionCode } = req.query;
-    config.then(result => {
-      const client = pagseguro.connect(result).transaction.get;
+  const {
+    transactionCode
+  } = req.query;
+  config.then(result => {
+    const client = pagseguro.connect(result).transaction.get;
 
-      client(transactionCode)
+    client(transactionCode)
       .then(data => {
         res.status(200).json(data);
       })
@@ -100,16 +109,16 @@ app.get("/api/transaction", function (req, res) {
         res.status(error.statusCode || 500).json(error);
       });
 
-    }).catch(e => {
-      console.error(e);
-      res.status(e.statusCode || 500).json(e);
-    })
+  }).catch(e => {
+    console.error(e);
+    res.status(e.statusCode || 500).json(e);
+  })
 
 });
 
 /**
  * Listen
  */
-app.listen(process.env.PORT || 80 , function () {
+app.listen(process.env.PORT || 80, function () {
   console.log("App listening on port 80!");
 });
