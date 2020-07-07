@@ -7,26 +7,29 @@ const admin = require('firebase-admin');
 const cors = require('cors');
 
 /**
+ * Initialize Express
+ */
+const app = express();
+
+const isProd = app.get('env') == 'development' ? false : true
+const serviceAccountName = app.get('env') == 'development' ? "./serviceAccountKeyDev.json" : "./serviceAccountProd.json"
+const databaseURL = app.get('env') == 'development' ? "https://projetobusca-dev.firebaseio.com" : "https://projetobusca-21e1e.firebaseio.com"
+
+/**
  * Initialize Firebase
  */
-const serviceAccount = require("./serviceAccountKey.json");
+const serviceAccount = require(serviceAccountName);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://projetobusca-21e1e.firebaseio.com"
+  databaseURL: databaseURL
 });
 
 const db = admin.firestore()
 
 /**
- * Initialize Express
- */
-const app = express();
-
-/**
  * Initialize Config Params
  */
-const isProd = app.get('env') == 'development' ? false : true
 const configCollection = db.collection("config").where("active", "==", true).where("isProd", "==", isProd).get()
 const config = configurations(configCollection);
 
