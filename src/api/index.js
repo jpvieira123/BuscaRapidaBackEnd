@@ -12,7 +12,7 @@ const cors = require('cors');
 const app = express();
 
 const isProd = app.get('env') == 'development' ? false : true
-const serviceAccountName = app.get('env') == 'development' ? "./serviceAccountKeyDev.json" : "./serviceAccountProd.json"
+const serviceAccountName = app.get('env') == 'development' ? "./serviceAccountKeyDev.json" : "./serviceAccountKeyProd.json"
 const databaseURL = app.get('env') == 'development' ? "https://projetobusca-dev.firebaseio.com" : "https://projetobusca-21e1e.firebaseio.com"
 
 /**
