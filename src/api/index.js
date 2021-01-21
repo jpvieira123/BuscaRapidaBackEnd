@@ -5,6 +5,7 @@ const configurations = require("./config");
 const bodyParser = require("body-parser");
 const admin = require('firebase-admin');
 const cors = require('cors');
+const createIframe = require('node-iframe');
 
 /**
  * Initialize Express
@@ -39,10 +40,11 @@ const config = configurations(configCollection);
 app.use(bodyParser.json());
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'https://ocomparador.com')
-  console.log('Middleware')
   app.use(cors());
   next()
 })
+
+app.use(createIframe.default);
 
 /**
  * Hello
@@ -117,6 +119,17 @@ app.get("/api/transaction", function (req, res) {
     res.status(e.statusCode || 500).json(e);
   })
 
+});
+
+/**
+ * X-Frame-Bypass
+ */
+app.get("/iframe", (req, res) => {
+  res.createIframe({
+    url: req.query.url,
+    baseHref: req.query.baseHref, // optional: determine how to control link redirects,
+    config: { cors: { script: false } }, // optional: determine element cors or inlining #shape src/iframe.ts#L34
+  });
 });
 
 /**
