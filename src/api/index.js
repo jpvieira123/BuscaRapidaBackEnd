@@ -124,11 +124,14 @@ app.get("/api/transaction", function (req, res) {
 /**
  * X-Frame-Bypass
  */
-app.get("/iframe", (req, res) => {
+app.get("/iframe", (req, res) => { 
   res.createIframe({
-    url: req.query.url,
-    baseHref: req.query.baseHref, // optional: determine how to control link redirects,
-    config: { cors: { script: false } }, // optional: determine element cors or inlining #shape src/iframe.ts#L34
+    url: encodeURI(req.query.url), 
+    baseHref: req.query.baseHref,
+    config: {
+      inline: { script: false, link: true },
+      cors: { script: false },
+    }, // optional: determine element cors or inlining #shape src/iframe.ts#L34
   });
 });
 
